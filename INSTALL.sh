@@ -53,6 +53,7 @@ curl -sLf https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar
 ./config --prefix="${PREFIX}" --openssldir="${PREFIX}" --libdir=lib -Wl,-rpath="${PREFIX}/lib" shared no-idea no-mdc2 no-rc5 no-ec2m no-ecdh no-ecdsa no-async && \
 make -j$(nproc) && \
 sudo make install_sw && \
+ldconfig ${PREFIX}/lib64 && \
 rm -rf ${DIR} && \
 
 PREFIX=/opt/icecast && \
