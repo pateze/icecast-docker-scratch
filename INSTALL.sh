@@ -45,7 +45,7 @@
 apt-get update && apt-get install -y libxml2-dev libxslt1-dev autoconf automake bison gawk gcc g++ curl libtool libpython3-all-dev make pkg-config python3 python3.9 sudo unzip wget && \
 
 PREFIX=/opt/icecast && \
-OPENSSL_VERSION=3.0.2 && \
+OPENSSL_VERSION=1.1.1s && \
 DIR=/tmp/openssl && \
 mkdir -p ${DIR} && \
 cd ${DIR} && \
