@@ -1,48 +1,29 @@
-# Lo ideal sería no depender de libxml2-dev libxslt1-dev, sino compilarlo
-# apt-get update && apt-get install -y autoconf automake bison gawk gcc g++ curl libtool libpython3-all-dev make pkg-config python3 python3.9 sudo unzip wget && \
+apt-get update && apt-get install -y autoconf automake bison curl gawk gcc g++ libtool libpython3-all-dev make pkg-config python3 python3.9 sudo unzip wget \
+check cmake libcppunit-1.15-0 && \
 
-# PREFIX=/opt/icecast && \
-# GLIBC_VERSION=2.36 && \
-# DIR=/tmp/glibc && \
-# mkdir -p ${PREFIX} && \
-# mkdir -p ${DIR} && \
-# cd ${DIR} && \
-# curl -sLf http://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz | tar -xz --strip-components=1 && \
-# cd ${PREFIX} && \
-# ${DIR}/configure --prefix="${PREFIX}" && \
-# make -j$(nproc) && \
-# sudo make install && \
-# rm -rf ${DIR}
+PREFIX=/opt/icecast && \
+LIBXML2_VERSION=2.10.3 && \
+DIR=/tmp/libxml2 && \
+mkdir -p ${DIR} && \
+cd ${DIR} && \
+curl -sLf https://github.com/GNOME/libxml2/archive/refs/tags/v${LIBXML2_VERSION}.tar.gz | tar -xz --strip-components=1 && \
+./autogen.sh && \
+./configure --prefix="${PREFIX}" && \
+make -j$(nproc) && \
+sudo make install && \
+rm -rf ${DIR} && \
 
-# PREFIX=/opt/icecast && \
-# LIBXML2_VERSION=2.10.3 && \
-# DIR=/tmp/libxml2 && \
-# mkdir -p ${DIR} && \
-# cd ${DIR} && \
-# curl -sLf https://gitlab.gnome.org/GNOME/libxml2/-/archive/v${LIBXML2_VERSION}/libxml2-v${LIBXML2_VERSION}.tar.gz | tar -xz --strip-components=1 && \
-# ./autogen.sh && \
-# ./configure --prefix="${PREFIX}" && \
-# make -j$(nproc) && \
-# sudo make install && \
-# rm -rf ${DIR} && \
-
-# PREFIX=/opt/icecast && \
-# LIBXSLT_VERSION=1.1.37 && \
-# DIR=/tmp/libxslt && \
-# LIBXML_LIBS=${PREFIX}/lib && \
-# LT_SYS_LIBRARY_PATH=${PREFIX}/lib && \
-# PKG_CONFIG=${PREFIX}/lib/pkgconfig && \
-# PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig && \
-# mkdir -p ${DIR} && \
-# cd ${DIR} && \
-# curl https://gitlab.gnome.org/GNOME/libxslt/-/archive/v${LIBXSLT_VERSION}/libxslt-v${LIBXSLT_VERSION}.tar.gz | tar -xz --strip-components=1 && \
-# ./autogen.sh && \
-# ./configure --prefix="${PREFIX}" --with-libxml-prefix="${PREFIX}" --with-libxml-libs-prefix="${PREFIX}" --with-libxml-include-prefix="${PREFIX}/include/libxml2" && \
-# make -j$(nproc) && \
-# sudo make install && \
-# rm -rf ${DIR}
-
-apt-get update && apt-get install -y libxml2-dev libxslt1-dev autoconf automake bison gawk gcc g++ curl libtool libpython3-all-dev make pkg-config python3 python3.9 sudo unzip wget && \
+PREFIX=/opt/icecast && \
+LIBXSLT_VERSION=1.1.37 && \
+DIR=/tmp/libxslt && \
+mkdir -p ${DIR} && \
+cd ${DIR} && \
+curl -sLf https://github.com/GNOME/libxslt/archive/refs/tags/v${LIBXSLT_VERSION}.tar.gz | tar -xz --strip-components=1 && \
+./autogen.sh --prefix="${PREFIX}" --with-libxml-prefix="${PREFIX}" && \
+./configure --prefix="${PREFIX}" --with-libxml-prefix="${PREFIX}" && \
+make -j$(nproc) && \
+sudo make install && \
+rm -rf ${DIR} && \
 
 PREFIX=/opt/icecast && \
 OPENSSL_VERSION=1.1.1s && \
@@ -94,8 +75,8 @@ DIR=/tmp/libtheora && \
 mkdir -p ${DIR} && \
 cd ${DIR} && \
 curl -sLf https://github.com/xiph/theora/archive/refs/tags/v${LIBTHEORA_VERSION}.tar.gz | tar -xz --strip-components=1 && \
-./autogen.sh --prefix="${PREFIX}" --with-ogg=/opt/icecast --with-vorbis=/opt/icecast && \
-./configure --prefix="${PREFIX}" --with-ogg=/opt/icecast --with-vorbis=/opt/icecast && \
+./autogen.sh --prefix="${PREFIX}" --with-ogg="${PREFIX}" --with-vorbis="${PREFIX}" && \
+./configure --prefix="${PREFIX}" --with-ogg="${PREFIX}" --with-vorbis="${PREFIX}" && \
 make -j$(nproc) && \
 sudo make install && \
 rm -rf ${DIR} && \
@@ -118,7 +99,18 @@ DIR=/tmp/icecast && \
 mkdir -p ${DIR} && \
 cd ${DIR} && \
 curl -sLf https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.tar.gz | tar -xz --strip-components=1 && \
-./configure --prefix="${PREFIX}" --with-ogg=/opt/icecast --with-vorbis=/opt/icecast --with-theora=/opt/icecast --with-speex=/opt/icecast --with-curl=/opt/icecast --with-curl-config=/opt/icecast --with-openssl=/opt/icecast && \
+./configure CFLAGS="-I/opt/icecast/include/libxml2" CPPFLAGS="-I/opt/icecast/include" XSLTCONFIG="/opt/icecast/bin/xslt-config"  \
+--prefix="${PREFIX}" \
+--exec-prefix="${PREFIX}" \
+--with-ogg="${PREFIX}" \
+--with-vorbis="${PREFIX}" \
+--with-theora="${PREFIX}" \
+--with-speex="${PREFIX}" \
+--with-curl="${PREFIX}" \
+--with-curl-config="${PREFIX}" \
+--with-openssl="${PREFIX}" \
+--datarootdir="${PREFIX}/share" \
+--docdir="${datarootdir}/manual" && \
 make -j$(nproc) && \
 sudo make install && \
 rm -rf ${DIR}
